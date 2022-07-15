@@ -12,5 +12,8 @@ st.sidebar.header("Sensors Info")
 st.markdown(
     """
 Information about sensors in Brasov
+
 """
 )
+
+st.markdown('<div style="text-align: justify;"><i>Work in progress</i></div>', unsafe_allow_html=True)

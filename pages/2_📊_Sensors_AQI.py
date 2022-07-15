@@ -12,5 +12,8 @@ st.sidebar.header("Sensors AQI")
 st.markdown(
     """
 AQI standards explained
+
 """
 )
+
+st.markdown('<div style="text-align: justify;"><i>Work in progress</i></div>', unsafe_allow_html=True)

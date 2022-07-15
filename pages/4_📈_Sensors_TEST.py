@@ -11,6 +11,9 @@ st.sidebar.header("Sensors TEST")
 
 st.markdown(
     """
+Tests
 
 """
 )
+
+st.markdown('<div style="text-align: justify;"><i>Work in progress</i></div>', unsafe_allow_html=True)
