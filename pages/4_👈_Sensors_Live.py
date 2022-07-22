@@ -31,12 +31,12 @@ dataframe = json_normalize(data['hits']['hits'])
 dataframe_size = len(dataframe.index)
 
 
-import matplotlib.pyplot as plt_hist_sensor
-hist_sensor = plt_hist_sensor.figure(figsize = (25,10))
-ax = hist_sensor.gca()
-dataframe.get('_source.Sensor').value_counts().plot(kind='bar')
-st.write("Histogram containing live data distribution after type of sensor")
-st.pyplot(plt_hist_sensor)
+# import matplotlib.pyplot as plt_hist_sensor
+# hist_sensor = plt_hist_sensor.figure(figsize = (25,10))
+# ax = hist_sensor.gca()
+# dataframe.get('_source.Sensor').value_counts().plot(kind='bar')
+# st.write("Histogram containing live data distribution after type of sensor")
+# st.pyplot(plt_hist_sensor)
 
 
 dataframe['LocationId'] = dataframe['_source.LocationLat']*10000000 + dataframe['_source.LocationLong']*10000000
@@ -75,12 +75,12 @@ dataframe.loc[dataframe['LocationId'] == 712247880.0, 'LocationName'] = 'Saguna'
 dataframe.loc[dataframe['LocationId'] == 712352710.0, 'LocationName'] = 'Livada'
 
 
-import matplotlib.pyplot as plt_hist_location
-hist_location = plt_hist_location.figure(figsize = (25,10))
-ax = hist_location.gca()
-dataframe.get('LocationName').value_counts().plot(kind='bar')
-st.write("Histogram containing live data distribution after location")
-st.pyplot(plt_hist_location)
+# import matplotlib.pyplot as plt_hist_location
+# hist_location = plt_hist_location.figure(figsize = (25,10))
+# ax = hist_location.gca()
+# dataframe.get('LocationName').value_counts().plot(kind='bar')
+# st.write("Histogram containing live data distribution after location")
+# st.pyplot(plt_hist_location)
 
 
 dataframe_v2 = dataframe[[i for i in list(dataframe.columns) if i != '_index']]
@@ -113,7 +113,7 @@ plt_bartolomeu.title("Last 100k values for PM10 in Bartolomeu")
 plt_bartolomeu.legend()
 # plt.savefig('plots_updated/PM10_Bartolomeu.jpg', bbox_inches = 'tight')
 plt_bartolomeu.show()
-st.write("Histogram containing live data visualization for PM10 values in Bartolomeu area")
+st.write("Plot containing live data visualization for PM10 values in Bartolomeu area")
 st.pyplot(plt_bartolomeu)
 
 
@@ -142,5 +142,5 @@ plt_arima.plot(y_pred_out, color='purple', label = 'ARIMA Predictions')
 plt_arima.legend()
 # plt.savefig('plots_updated/PM10_Toamnei_ARIMA_Prediction1.jpg', bbox_inches = 'tight')
 plt_arima.show()
-st.write("Histogram containing live data visualization for PM10 values in Toamnei and ARIMA prediction")
+st.write("Plot containing live data visualization for PM10 values in Toamnei and ARIMA prediction")
 st.pyplot(plt_arima)

@@ -1,20 +1,20 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Sensors Info",
-    page_icon="🌍",
+    page_title="TEST Page2",
+    page_icon="📈",
 )
 
-st.write("# Information about sensors! 🌍")
+# st.write("# Predictions TEST! 📈")
 
-st.sidebar.header("Sensors Info")
+# st.sidebar.header("Sensors TEST")
 
-st.markdown(
-    """
-Information about sensors in Brasov
+# st.markdown(
+#     """
+# Tests
 
-"""
-)
+# """
+# )
 
 # st.markdown('<div style="text-align: justify;"><i>Work in progress</i></div>', unsafe_allow_html=True)
 
@@ -31,14 +31,6 @@ data = json.loads(response.text)
 from pandas import json_normalize
 dataframe = json_normalize(data['hits']['hits'])
 dataframe_size = len(dataframe.index)
-
-
-import matplotlib.pyplot as plt_hist_sensor
-hist_sensor = plt_hist_sensor.figure(figsize = (25,10))
-ax = hist_sensor.gca()
-dataframe.get('_source.Sensor').value_counts().plot(kind='bar')
-st.write("Histogram containing live data distribution after type of sensor")
-st.pyplot(plt_hist_sensor)
 
 
 dataframe['LocationId'] = dataframe['_source.LocationLat']*10000000 + dataframe['_source.LocationLong']*10000000
@@ -77,9 +69,27 @@ dataframe.loc[dataframe['LocationId'] == 712247880.0, 'LocationName'] = 'Saguna'
 dataframe.loc[dataframe['LocationId'] == 712352710.0, 'LocationName'] = 'Livada'
 
 
-import matplotlib.pyplot as plt_hist_location
-hist_location = plt_hist_location.figure(figsize = (25,10))
-ax = hist_location.gca()
-dataframe.get('LocationName').value_counts().plot(kind='bar')
-st.write("Histogram containing live data distribution after location")
-st.pyplot(plt_hist_location)
+dataframe_v2 = dataframe[[i for i in list(dataframe.columns) if i != '_index']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != '_type']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != '_id']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != '_score']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != 'sort']]
+cho2 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'cho2']
+co2 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'co2']
+no2 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'no2']
+o3 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'o3']
+pm1 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'pm1']
+pm10 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'pm10']
+pm25 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'pm25']
+so2 = dataframe_v2[dataframe_v2.get('_source.Sensor') == 'so2']
+
+
+# # Create a list of possible values and multiselect menu with them in it.
+SENSORS = dataframe_v2['_source.Sensor'].unique()
+SENSORS_SELECTED = st.sidebar.multiselect('Select sensors', SENSORS)
+
+# # Mask to filter dataframe
+mask_sensors = dataframe_v2['_source.Sensor'].isin(SENSORS_SELECTED)
+dataframe_v2 = dataframe_v2[mask_sensors]
+
+st.dataframe(dataframe_v2)
