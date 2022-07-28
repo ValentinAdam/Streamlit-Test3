@@ -5,7 +5,7 @@ st.set_page_config(
     page_icon="📈",
 )
 
-st.write("# Predictions for pollution data! 📈")
+st.write("# Predictions for pollution data 📈")
 
 st.sidebar.header("Sensors Predictions")
 
@@ -14,7 +14,6 @@ st.markdown(
 Predictions page for sensors in Brasov
 """
 )
-
 
 
 import logging
@@ -33,7 +32,6 @@ import plotly.graph_objects as go
 
 from PIL import Image
  
-# st.set_page_config(page_title="Predicție poluare", page_icon=":bar_chart:", layout="wide")
 
 @st.cache(allow_output_mutation=True)
 def get_data(path:str)->pd.DataFrame:
@@ -47,34 +45,99 @@ def get_image(path:str)->Image:
     image = Image.open(path)
     return image
 
-# sales_data = get_data("Superstore_Orders.csv")
-# image = get_image("supermarket.jpeg")
 
-# # ---- MAINPAGE ----
-# st.title(":bar_chart: Metode de analiză și predicție a poluării aerului")
-# st.markdown("##")
+import pandas as pd
+import requests
+from requests.auth import HTTPBasicAuth
+auth = HTTPBasicAuth('elastic', 'AWbtmGda2Q7BI2bYpdjyF4qd')
+url = 'https://8f9677360fc34e2eb943d737b2597c7b.us-east-1.aws.found.io:9243/brasov-dev/_search?size=10000&q=*&sort=TimeStamp:desc'
+response = requests.get(url=url, auth=auth)
+import json
+data = json.loads(response.text)
+from pandas import json_normalize
+dataframe = json_normalize(data['hits']['hits'])
+dataframe_size = len(dataframe.index)
 
-# st.markdown("""---""")
+dataframe.rename(columns = {'_source.Source':'Source', '_source.Sensor':'Sensor', '_source.Value':'Value', '_source.LocationLat':'Latitude', '_source.LocationLong':'Longitude', '_source.TimeStamp':'Timestamp', '_source.Measurement':'Measurement'}, inplace = True)
 
-# st.plotly_chart(fig)
+dataframe['LocationId'] = dataframe['Latitude']*10000000 + dataframe['Longitude']*10000000
+dataframe['LocationName'] = ""
+dataframe.loc[dataframe['LocationId'] == 712668900.0, 'LocationName'] = 'Toamnei' 
+dataframe.loc[dataframe['LocationId'] == 712196290.0, 'LocationName'] = 'Carierei'
+dataframe.loc[dataframe['LocationId'] == 712209000.0, 'LocationName'] = 'Brintex'
+dataframe.loc[dataframe['LocationId'] == 712240750.0, 'LocationName'] = 'Avantgarden'
+dataframe.loc[dataframe['LocationId'] == 708361730.0, 'LocationName'] = 'Bucegi'
+dataframe.loc[dataframe['LocationId'] == 712682018.0, 'LocationName'] = 'Carrefour'
+dataframe.loc[dataframe['LocationId'] == 712307300.0, 'LocationName'] = 'Centru'
+dataframe.loc[dataframe['LocationId'] == 712422000.0, 'LocationName'] = 'Cetatuie'
+dataframe.loc[dataframe['LocationId'] == 712485560.0, 'LocationName'] = 'Basarab'
+dataframe.loc[dataframe['LocationId'] == 712532529.0, 'LocationName'] = 'Patria'
+dataframe.loc[dataframe['LocationId'] == 711435090.0, 'LocationName'] = 'Codlea1'
+dataframe.loc[dataframe['LocationId'] == 711587690.0, 'LocationName'] = 'Codlea2'
+dataframe.loc[dataframe['LocationId'] == 712526000.0, 'LocationName'] = 'Colina1'
+dataframe.loc[dataframe['LocationId'] == 712485000.0, 'LocationName'] = 'Colina2'
+dataframe.loc[dataframe['LocationId'] == 711054930.0, 'LocationName'] = 'Cristian'
+dataframe.loc[dataframe['LocationId'] == 712743216.0, 'LocationName'] = 'Gara'
+dataframe.loc[dataframe['LocationId'] == 713825580.0, 'LocationName'] = 'Harman1'
+dataframe.loc[dataframe['LocationId'] == 714030800.0, 'LocationName'] = 'Harman2'
+dataframe.loc[dataframe['LocationId'] == 712560910.0, 'LocationName'] = 'Racadau'
+dataframe.loc[dataframe['LocationId'] == 710537170.0, 'LocationName'] = 'Rasnov'
+dataframe.loc[dataframe['LocationId'] == 713449870.0, 'LocationName'] = 'Sanpetru1'
+dataframe.loc[dataframe['LocationId'] == 713500000.0, 'LocationName'] = 'Sanpetru2'
+dataframe.loc[dataframe['LocationId'] == 712475170.0, 'LocationName'] = 'Saturn'
+dataframe.loc[dataframe['LocationId'] == 712500331.0, 'LocationName'] = 'Stupini1'
+dataframe.loc[dataframe['LocationId'] == 712571580.0, 'LocationName'] = 'Stupini2'
+dataframe.loc[dataframe['LocationId'] == 712804610.0, 'LocationName'] = 'Tractorul'
+dataframe.loc[dataframe['LocationId'] == 713218270.0, 'LocationName'] = 'TriajH'
+dataframe.loc[dataframe['LocationId'] == 712783320.0, 'LocationName'] = 'Vlahuta1'
+dataframe.loc[dataframe['LocationId'] == 712797770.0, 'LocationName'] = 'Vlahuta2'
+dataframe.loc[dataframe['LocationId'] == 708839110.0, 'LocationName'] = 'Zarnesti'
+dataframe.loc[dataframe['LocationId'] == 712247880.0, 'LocationName'] = 'Saguna'
+dataframe.loc[dataframe['LocationId'] == 712352710.0, 'LocationName'] = 'Livada'
 
 
+dataframe_v2 = dataframe[[i for i in list(dataframe.columns) if i != '_index']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != '_type']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != '_id']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != '_score']]
+dataframe_v2 = dataframe_v2[[i for i in list(dataframe_v2.columns) if i != 'sort']]
+cho2 = dataframe_v2[dataframe_v2.get('Sensor') == 'cho2']
+co2 = dataframe_v2[dataframe_v2.get('Sensor') == 'co2']
+no2 = dataframe_v2[dataframe_v2.get('Sensor') == 'no2']
+o3 = dataframe_v2[dataframe_v2.get('Sensor') == 'o3']
+pm1 = dataframe_v2[dataframe_v2.get('Sensor') == 'pm1']
+pm10 = dataframe_v2[dataframe_v2.get('Sensor') == 'pm10']
+pm25 = dataframe_v2[dataframe_v2.get('Sensor') == 'pm25']
+so2 = dataframe_v2[dataframe_v2.get('Sensor') == 'so2']
+
+SENSORS = dataframe_v2['Sensor'].unique()
+SENSORS_SELECTED = st.sidebar.multiselect('Select sensors', SENSORS)
+mask_sensors = dataframe_v2['Sensor'].isin(SENSORS_SELECTED)
+dataframe_v2 = dataframe_v2[mask_sensors]
+
+st.dataframe(dataframe_v2)
 
 
 pd.options.mode.chained_assignment = None
-data = get_data("82000278_Toamnei_2022_05.csv")
+# data = get_data("82000278_Toamnei_2022_05.csv")
 # data = get_data("../82000278_Toamnei_2022_05.csv")
 # data = pd.read_csv("82000278_Toamnei_2022_05.csv")
+data = dataframe_v2
+data['day'] = ' '
+st.dataframe(data)
 
 # drop Nan columns and indexes
 data.dropna(axis='columns', how='all', inplace=True)
 data.dropna(axis='index', how='all', inplace=True)
 
 # convert to date format
-data['day'] = pd.to_datetime(data['day'], dayfirst=True)
+# dataframe.loc[dataframe['LocationId'] == 712668900.0, 'LocationName'] = 'Toamnei' 
+# data.loc[data['Timestamp'], 'day'] = pd.to_datetime('Timestamp')
+data['day'] = pd.to_datetime(data['Timestamp'], dayfirst=True)
+# data['day'] = data['Timestamp'].dt.date
 
 # modify name with any sensor name from df
-sensor_name = 'pm10'
+sensor_name = mask_sensors
 
 # sort dates by day
 data = data.sort_values(by=['day'])

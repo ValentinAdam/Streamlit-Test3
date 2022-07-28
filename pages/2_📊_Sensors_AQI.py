@@ -1,11 +1,12 @@
 import streamlit as st
+import pandas as pd
 
 st.set_page_config(
     page_title="Sensors AQI",
     page_icon="📊",
 )
 
-st.write("# Air Quality Index (AQI) Basics! 📊")
+st.write("# Air Quality Index (AQI) Basics 📊")
 
 # st.markdown(
 #     """

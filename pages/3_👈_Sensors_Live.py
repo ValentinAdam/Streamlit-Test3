@@ -1,11 +1,11 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Sensors Live",
+    page_title="Sensors Live - Random",
     page_icon="📈",
 )
 
-st.write("# Live data for sensors! 📈")
+st.write("# Live data for sensors 📈")
 
 st.sidebar.header("Sensors Live")
 
